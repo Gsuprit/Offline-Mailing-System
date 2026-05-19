@@ -1,86 +1,243 @@
-return (
-  <div
-    style={{
-      minHeight: "100vh",
-      backgroundColor: "#0f172a",
-      color: "white",
-      padding: "40px",
-      fontFamily: "Arial"
-    }}
-  >
-    <div
-      style={{
-        maxWidth: "500px",
-        margin: "auto",
-        backgroundColor: "#1e293b",
-        padding: "30px",
-        borderRadius: "10px"
-      }}
-    >
-      <h1 style={{ textAlign: "center" }}>
-        User Registration
-      </h1>
+import { useState } from "react";
+import axios from "axios";
+import "./App.css";
 
-      <input
-        type="text"
-        placeholder="Enter Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "20px"
-        }}
-      />
+function App() {
 
-      <input
-        type="password"
-        placeholder="Enter Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginTop: "20px"
-        }}
-      />
+  const [userId, setUserId] = useState("");
+  const [username, setUsername] = useState("");
+  const [dob, setDob] = useState("");
+  const [password, setPassword] = useState("");
 
-      <button
-        onClick={registerUser}
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginTop: "20px",
-          backgroundColor: "#3b82f6",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer"
-        }}
-      >
-        Register
-      </button>
+  const [q1, setQ1] = useState("");
+  const [a1, setA1] = useState("");
 
-      <hr style={{ margin: "30px 0" }} />
+  const [q2, setQ2] = useState("");
+  const [a2, setA2] = useState("");
 
-      <h2>Registered Users</h2>
+  const [passwordChangeDate, setPasswordChangeDate] =
+    useState("");
 
-      {
-        users.map((user, index) => (
-          <div
-            key={index}
-            style={{
-              backgroundColor: "#334155",
-              padding: "10px",
-              marginTop: "10px",
-              borderRadius: "5px"
-            }}
-          >
-            <p>{user.username}</p>
-          </div>
-        ))
-      }
+  const [message, setMessage] = useState("");
+
+  const validatePassword = (password) => {
+
+    const regex =
+      /^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,12}$/;
+
+    return regex.test(password);
+  };
+
+  const registerUser = async () => {
+
+    if (
+      !userId ||
+      !username ||
+      !dob ||
+      !password ||
+      !q1 ||
+      !a1 ||
+      !q2 ||
+      !a2 ||
+      !passwordChangeDate
+    ) {
+      setMessage("All fields are required");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+
+      setMessage(
+        "Password must contain capital letter and special character"
+      );
+
+      return;
+    }
+
+    try {
+
+      await axios.post(
+        "http://localhost:8080/api/register",
+        {
+          userId,
+          username,
+          dob,
+          password,
+          q1,
+          a1,
+          q2,
+          a2,
+          passwordChangeDate
+        }
+      );
+
+      setMessage("User Registered Successfully");
+
+      setUserId("");
+      setUsername("");
+      setDob("");
+      setPassword("");
+      setQ1("");
+      setA1("");
+      setQ2("");
+      setA2("");
+      setPasswordChangeDate("");
+
+    } catch (error) {
+
+      setMessage("Backend Connection Failed");
+    }
+  };
+
+  return (
+
+    <div className="container">
+
+      <div className="form-box">
+
+        <h1>User Registration</h1>
+
+        {
+          message &&
+          <p className="message">{message}</p>
+        }
+
+        <label>User ID</label>
+
+        <input
+          type="text"
+          value={userId}
+          onChange={(e) =>
+            setUserId(e.target.value)
+          }
+        />
+
+        <label>Username</label>
+
+        <input
+          type="text"
+          value={username}
+          onChange={(e) =>
+            setUsername(e.target.value)
+          }
+        />
+
+        <label>DOB</label>
+
+        <input
+          type="date"
+          value={dob}
+          onChange={(e) =>
+            setDob(e.target.value)
+          }
+        />
+
+        <label>Password</label>
+
+        <input
+          type="password"
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+        />
+
+        <p className="note">
+          Password must contain:
+          <br />
+          8-12 characters
+          <br />
+          1 capital letter
+          <br />
+          1 special character
+        </p>
+
+        <label>Question 1</label>
+
+        <select
+          value={q1}
+          onChange={(e) =>
+            setQ1(e.target.value)
+          }
+        >
+
+          <option value="">
+            Select Question
+          </option>
+
+          <option value="What is your nickname?">
+            What is your nickname?
+          </option>
+
+          <option value="What is your first school name?">
+            What is your first school name?
+          </option>
+
+        </select>
+
+        <label>Answer 1</label>
+
+        <input
+          type="text"
+          value={a1}
+          onChange={(e) =>
+            setA1(e.target.value)
+          }
+        />
+
+        <label>Question 2</label>
+
+        <select
+          value={q2}
+          onChange={(e) =>
+            setQ2(e.target.value)
+          }
+        >
+
+          <option value="">
+            Select Question
+          </option>
+
+          <option value="What is your place of birth?">
+            What is your place of birth?
+          </option>
+
+          <option value="What is your mother's surname?">
+            What is your mother's surname?
+          </option>
+
+        </select>
+
+        <label>Answer 2</label>
+
+        <input
+          type="text"
+          value={a2}
+          onChange={(e) =>
+            setA2(e.target.value)
+          }
+        />
+
+        <label>Password Change Date</label>
+
+        <input
+          type="date"
+          value={passwordChangeDate}
+          onChange={(e) =>
+            setPasswordChangeDate(
+              e.target.value
+            )
+          }
+        />
+
+        <button onClick={registerUser}>
+          SAVE
+        </button>
+
+      </div>
 
     </div>
-  </div>
-);
+  );
+}
+
+export default App;
