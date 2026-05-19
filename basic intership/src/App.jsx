@@ -31,17 +31,19 @@ function App() {
   const registerUser = async () => {
 
     if (
-      !userId ||
-      !username ||
-      !dob ||
-      !password ||
-      !q1 ||
-      !a1 ||
-      !q2 ||
-      !a2 ||
-      !passwordChangeDate
+      userId.trim() === "" ||
+      username.trim() === "" ||
+      dob.trim() === "" ||
+      password.trim() === "" ||
+      q1.trim() === "" ||
+      a1.trim() === "" ||
+      q2.trim() === "" ||
+      a2.trim() === "" ||
+      passwordChangeDate.trim() === ""
     ) {
+
       setMessage("All fields are required");
+
       return;
     }
 

@@ -14,7 +14,7 @@ import backend.model.User;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private List<User> users = new ArrayList<>();
