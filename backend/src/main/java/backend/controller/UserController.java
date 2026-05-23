@@ -1,37 +1,31 @@
 package backend.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import backend.model.User;
+import backend.repository.UserRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
-    private List<User> users = new ArrayList<>();
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody User user) {
+    public User registerUser(
+            @RequestBody User user) {
 
-        users.add(user);
-
-        System.out.println("User Added: " + user.getUsername());
-
-        return user;
+        return userRepository.save(user);
     }
 
     @GetMapping("/users")
-    public List<User> getUsers() {
+    public List<User> getAllUsers() {
 
-        return users;
+        return userRepository.findAll();
     }
 }
