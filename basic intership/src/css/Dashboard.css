@@ -1,0 +1,523 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,
+body,
+#root{
+  width:100%;
+  height:100%;
+}
+
+.dashboard-container{
+  display:flex;
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  background:#0f172a;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  width:260px;
+  background:#111827;
+  color:white;
+  padding:25px;
+  display:flex;
+  flex-direction:column;
+}
+
+.welcome-text{
+  color:#60a5fa;
+  margin-bottom:30px;
+}
+
+.sidebar p{
+  padding:14px;
+  border-radius:10px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.sidebar p:hover{
+  background:#1e3a8a;
+}
+
+.active-menu{
+  background:#2563eb;
+  color:white;
+}
+
+/* MAIN */
+
+.main-section{
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* STATS */
+
+.stats-container{
+  display:flex;
+  gap:15px;
+  padding:15px;
+  background:#0f172a;
+}
+
+.stat-card{
+  flex:1;
+
+  background:linear-gradient(
+    135deg,
+    #2563eb,
+    #1e40af
+  );
+
+  padding:20px;
+
+  border-radius:15px;
+
+  color:white;
+
+  text-align:center;
+
+  box-shadow:
+  0 4px 15px
+  rgba(0,0,0,.25);
+}
+
+.stat-card h2{
+  margin-top:10px;
+}
+
+/* MAIL AREA */
+
+.mail-layout{
+  display: flex;
+  gap: 20px;
+  height: calc(100vh - 140px);
+}
+
+.mail-list{
+  width:35%;
+  background:#1e293b;
+  color:white;
+  padding:20px;
+  overflow-y:auto;
+}
+
+.mail-list h2{
+  margin-top: 10px;
+  margin-bottom: 25px;
+  color:#60a5fa;
+}
+
+.mail-content{
+  flex:1;
+  background:#111827;
+  color:white;
+  padding:25px;
+  overflow-y:auto;
+}
+
+/* MAIL CARD */
+
+.mail-card{
+  background:#334155;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:12px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.mail-card:hover{
+  background:#2563eb;
+}
+
+.mail-content h2{
+  color:#60a5fa;
+  margin-bottom:20px;
+}
+
+.mail-content strong{
+  color:#93c5fd;
+}
+
+/* INPUTS */
+
+input,
+textarea{
+  width:100%;
+  padding:12px;
+
+  background:#334155;
+  color:white;
+
+  border:1px solid #475569;
+  border-radius:10px;
+}
+
+input::placeholder,
+textarea::placeholder{
+  color:#cbd5e1;
+}
+
+/* BUTTONS */
+
+button{
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:10px;
+  padding:12px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+
+.delete-btn{
+  width: 120px;
+  height: 38px;
+  font-size: 14px;
+}
+
+.delete-btn:hover{
+  background: #b91c1c;
+}
+
+/* CALENDAR */
+
+.calendar-wrapper {
+  background: #0b1730;
+  padding: 25px;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+.fc {
+  background: #0f1b3d;
+  padding: 20px;
+  border-radius: 20px;
+  color: white;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.fc-col-header-cell {
+  background: #152850;
+  color: white;
+  padding: 10px;
+}
+
+.fc-daygrid-day-number {
+  color: white !important;
+  font-weight: 600;
+}
+
+.fc-toolbar-title {
+  color: white;
+  font-size: 28px !important;
+  font-weight: bold;
+}
+
+
+.fc-button {
+  background: #3366e8 !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.fc-button:hover {
+  background: #4b7cff !important;
+}
+
+.fc-day-today {
+  background: rgba(51,102,232,0.2) !important;
+}
+
+.fc-event {
+  background: #3366e8 !important;
+  border: none !important;
+  border-radius: 6px !important;
+}
+
+.event-modal {
+  background: #0f1b3d;
+  width: 500px;
+  padding: 35px;
+  border-radius: 20px;
+}
+
+.event-modal h2 {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 32px;
+}
+
+.event-date {
+  color: #8fb0ff;
+  margin-bottom: 25px;
+  font-size: 18px;
+}
+
+.event-modal input {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #33425f;
+  color: white;
+}
+
+.event-modal textarea {
+  width: 100%;
+  height: 140px;
+  margin-bottom: 25px;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #33425f;
+  color: white;
+}
+
+.save-btn {
+  width: 100%;
+  height: 55px;
+  border: none;
+  border-radius: 12px;
+  background: #3366e8;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.cancel-btn {
+  width: 100%;
+  height: 55px;
+  border: none;
+  border-radius: 12px;
+  background: #233a78;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.events-section {
+  margin-top: 40px;
+}
+
+.events-section h3 {
+  margin-bottom: 25px;
+  color: white;
+}
+
+.event-card {
+  background: #33425f;
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
+  color: white;
+}
+
+.event-card h4 {
+  margin-bottom: 10px;
+}
+
+.event-card p {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.edit-btn {
+  width: 120px;
+  height: 40px;
+  background: #3366e8;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  margin-right: 10px;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.delete-btn {
+  width: 120px;
+  height: 40px;
+  background: #e02424;
+  border: none;
+  display: inline-block;
+  margin-right: 10px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.calendar-container{
+  width: 100%;
+  height: auto;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* PROFILE PAGE */
+
+.profile-container{
+  max-width:900px;
+  margin:auto;
+}
+
+.profile-card{
+  background:#111827;
+  border-radius:20px;
+  padding:30px;
+  color:white;
+  box-shadow:0 4px 15px rgba(0,0,0,.25);
+}
+
+.profile-title{
+  color:#60a5fa;
+  margin-bottom:30px;
+  font-size:30px;
+}
+
+.profile-label{
+  color:#93c5fd;
+  font-weight:600;
+  margin-bottom:8px;
+  display:block;
+}
+
+.profile-field{
+  margin-bottom:22px;
+}
+
+.profile-card input,
+.profile-card select{
+  width:100%;
+  padding:12px;
+  background:#1e293b;
+  border:1px solid #334155;
+  color:white;
+  border-radius:10px;
+}
+
+.profile-card input:disabled,
+.profile-card select:disabled{
+  opacity:1;
+  cursor:default;
+}
+
+.profile-btn{
+  width:220px;
+  height:45px;
+  border:none;
+  border-radius:10px;
+  background:#2563eb;
+  color:white;
+  font-weight:bold;
+}
+
+.profile-btn:hover{
+  background:#2563eb;
+}
+
+/* REMOVE GLOW EFFECT */
+
+.profile-card:hover{
+  transform:none;
+  box-shadow:0 4px 15px rgba(0,0,0,.25);
+}
+
+.mail-card:hover{
+  transform:none;
+}
+
+.profile-card{
+  background:#1e293b;
+  padding:30px;
+  border-radius:20px;
+  color:white;
+}
+
+.profile-card p{
+  margin-bottom:8px;
+  color:#cbd5e1;
+  font-weight:500;
+}
+
+.profile-card strong{
+  color:#60a5fa;
+}
+
+.profile-btn{
+  width:220px;
+  height:50px;
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.profile-btn:hover{
+  background:#1d4ed8;
+  transform:none;
+  box-shadow:none;
+}
+
+.profile-btn:focus{
+  outline:none;
+  box-shadow:none;
+}
+
+.profile-heading{
+  color:#60a5fa;
+  margin-bottom:25px;
+}
+
+.mail-info-row{
+  display:flex;
+  align-items:center;
+  margin-bottom:18px;
+  padding:12px 15px;
+  background:#1e293b;
+  border-radius:10px;
+}
+
+.mail-info-row .label{
+  width:120px;
+  color:#60a5fa;
+  font-weight:600;
+  font-size:15px;
+}
+
+.mail-info-row .value{
+  flex:1;
+  color:white;
+  font-size:15px;
+  word-break:break-word;
+}
+
+.mail-content hr{
+  margin:25px 0;
+  border:none;
+  border-top:1px solid #334155;
+}

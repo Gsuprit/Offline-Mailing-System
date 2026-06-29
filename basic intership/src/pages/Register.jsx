@@ -26,9 +26,21 @@ function Register() {
 
     let newErrors = {};
 
-    if (!userId.trim()) {
-      newErrors.userId = "Required";
-    }
+   if (!userId.trim()) {
+
+  newErrors.userId =
+    "Email is required";
+
+}
+else if (
+  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    .test(userId)
+) {
+
+  newErrors.userId =
+    "Enter valid email";
+
+}
 
     if (!username.trim()) {
 
@@ -115,26 +127,49 @@ function Register() {
 
   const registerUser = async () => {
 
-    if (!validate()) {
+  if (!validate()) {
+    return;
+  }
+
+  try {
+
+    const usersResponse =
+      await axios.get(
+        "http://localhost:8080/api/users"
+      );
+
+    const emailExists =
+      usersResponse.data.some(
+        (user) =>
+          user.userId
+            .toLowerCase() ===
+          userId.toLowerCase()
+      );
+
+    if (emailExists) {
+
+      setErrors({
+        userId:
+          "Mail ID already exists"
+      });
+
       return;
     }
 
-    try {
-
-      await axios.post(
-        "http://localhost:8080/api/register",
-        {
-          userId,
-          username,
-          dob,
-          password,
-          q1,
-          a1,
-          q2,
-          a2,
-          passwordChangeDate
-        }
-      );
+    await axios.post(
+      "http://localhost:8080/api/register",
+      {
+        userId,
+        username,
+        dob,
+        password,
+        q1,
+        a1,
+        q2,
+        a2,
+        passwordChangeDate
+      }
+    );
 
       setMessage(
         "User Registered Successfully"
@@ -172,10 +207,11 @@ function Register() {
 
         <div className="row">
 
-          <label>User ID</label>
+          <label>Mail ID</label>
 
           <input
             type="text"
+            placeholder="Ex: example@gmail.com"
             value={userId}
             onChange={(e) =>
               setUserId(e.target.value)
@@ -230,6 +266,7 @@ function Register() {
 
           <input
             type="password"
+            placeholder="8-12 chars, 1 capital, 1 special"
             value={password}
             onChange={(e) =>
               setPassword(e.target.value)

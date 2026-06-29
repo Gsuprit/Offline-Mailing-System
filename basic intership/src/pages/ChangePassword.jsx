@@ -19,6 +19,18 @@ function ChangePassword() {
   const [message, setMessage] =
     useState("");
 
+    const [showOldPassword,
+setShowOldPassword] =
+useState(false);
+
+const [showNewPassword,
+setShowNewPassword] =
+useState(false);
+
+const [showConfirmPassword,
+setShowConfirmPassword] =
+useState(false);
+
   const validate = () => {
 
     let newErrors = {};
@@ -132,16 +144,24 @@ function ChangePassword() {
 
         <h1>Change Password</h1>
 
-        <p className="message">
-          {message}
-        </p>
+       <p
+  className={
+    message ===
+    "Password Changed Successfully"
+      ? "success-message"
+      : "error-message"
+  }
+>
+  {message}
+</p>
 
         <div className="row">
 
-          <label>User ID</label>
+          <label>Mail ID</label>
 
           <input
             type="text"
+            placeholder="Ex: example@gmail.com"
             value={userId}
             onChange={(e) =>
               setUserId(e.target.value)
@@ -159,7 +179,10 @@ function ChangePassword() {
           <label>Old Password</label>
 
           <input
-            type="password"
+            type={showOldPassword
+    ? "text"
+    : "password"}
+              placeholder="8-12 chars, 1 capital, 1 special"
             value={oldPassword}
             onChange={(e) =>
               setOldPassword(
@@ -179,7 +202,10 @@ function ChangePassword() {
           <label>New Password</label>
 
           <input
-            type="password"
+            type={showOldPassword
+    ? "text"
+    : "password"}
+            placeholder="8-12 chars, 1 capital, 1 special"
             value={newPassword}
             onChange={(e) =>
               setNewPassword(

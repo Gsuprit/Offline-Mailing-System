@@ -21,6 +21,16 @@ public class User {
 
     private String passwordChangeDate;
 
+    private Boolean passwordReminderSent = false;
+
+public Boolean getPasswordReminderSent() {
+    return passwordReminderSent;
+}
+
+public void setPasswordReminderSent(Boolean passwordReminderSent) {
+    this.passwordReminderSent = passwordReminderSent;
+}
+
     public User() {
     }
 

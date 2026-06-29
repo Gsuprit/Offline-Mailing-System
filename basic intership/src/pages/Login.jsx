@@ -1,16 +1,21 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../css/Login.css";
 
 function Login() {
 
+  const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
 
   const [errors, setErrors] = useState({});
 
   const [message, setMessage] = useState("");
+
+  const [showPassword, setShowPassword] =
+  useState(false);
 
   const validate = () => {
 
@@ -55,11 +60,26 @@ function Login() {
 
       if (validUser) {
 
-        setMessage(
-          "Login Successful"
-        );
+       localStorage.setItem(
+       "isLoggedIn",
+       "true"
+      ); 
+      
+       localStorage.setItem(
+      "loggedInUser",
+       validUser.userId
+       );
+       
+      setMessage(
+        "Login Successful"
+      );
 
-      } else {
+      setTimeout(() => {
+    navigate("/dashboard");
+  }, 1000);
+      
+
+    } else {
 
         setMessage(
           "Invalid User ID or Password"
@@ -82,16 +102,23 @@ function Login() {
 
         <h1>LOGIN</h1>
 
-        <p className="message">
-          {message}
-        </p>
+        <p
+  className={
+    message === "Login Successful"
+      ? "success-message"
+      : "error-message"
+  }
+>
+  {message}
+</p>
 
         <div className="row">
 
-          <label>User ID</label>
+          <label>Mail ID</label>
 
           <input
             type="text"
+            placeholder="Ex: example@gmail.com"
             value={userId}
             onChange={(e) =>
               setUserId(e.target.value)
@@ -108,13 +135,33 @@ function Login() {
 
           <label>Password</label>
 
-          <input
-            type="password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-          />
+          <div className="password-wrapper">
+
+  <input
+    type={
+      showPassword
+        ? "text"
+        : "password"
+    }
+    placeholder="8-12 chars, 1 capital, 1 special"
+    value={password}
+    onChange={(e) =>
+      setPassword(e.target.value)
+    }
+  />
+
+  <span
+    className="eye-icon"
+    onClick={() =>
+      setShowPassword(
+        !showPassword
+      )
+    }
+  >
+    {showPassword ? "🙈" : "👁️"}
+  </span>
+
+</div>
 
           <span className="error">
             {errors.password}

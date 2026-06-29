@@ -109,16 +109,23 @@ function ForgetPassword() {
 
         <h1>Forgot Password</h1>
 
-        <p className="message">
-          {message}
-        </p>
+        <p
+  className={
+    message.startsWith("Your Password is:")
+      ? "success-message"
+      : "error-message"
+  }
+>
+  {message}
+</p>
 
         <div className="row">
 
-          <label>User ID</label>
+          <label>Mail ID</label>
 
           <input
             type="text"
+            placeholder="Ex: example@gmail.com"
             value={userId}
             onChange={(e) =>
               setUserId(e.target.value)

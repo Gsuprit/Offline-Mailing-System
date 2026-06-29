@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { HashRouter, Routes, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ChangePassword from "./pages/ChangePassword";
@@ -9,12 +9,12 @@ function App() {
 
   return (
 
-    <BrowserRouter>
+    <HashRouter>
 
       <Routes>
 
         <Route path="/" element={<Login />} />
-
+        
         <Route
           path="/register"
           element={<Register />}
@@ -30,9 +30,13 @@ function App() {
           element={<ForgetPassword />}
         />
 
+        <Route
+          path="/dashboard"
+          element={<Dashboard />}
+        />
       </Routes>
 
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
