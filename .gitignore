@@ -1,0 +1,17 @@
+# Backend
+backend/target/
+backend/uploads/
+
+# Frontend
+basic intership/node_modules/
+basic intership/dist/
+
+# IDE
+.vscode/
+
+# OS
+desktop.ini
+.DS_Store
+
+# Logs
+*.log
