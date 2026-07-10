@@ -30,9 +30,14 @@ body,
   flex-direction:column;
 }
 
-.welcome-text{
-  color:#60a5fa;
-  margin-bottom:30px;
+
+
+.welcome-text h1{
+    color:#ffffff;
+}
+
+.welcome-text p{
+    color:#cbd5e1;
 }
 
 .sidebar p{
@@ -520,4 +525,142 @@ button:hover{
   margin:25px 0;
   border:none;
   border-top:1px solid #334155;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.dashboard-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:30px;
+}
+
+.dashboard-greeting{
+    font-size:34px;
+    font-weight:700;
+    color:#ffffff;
+    margin:0;
+}
+
+.dashboard-username{
+    font-size:20px;
+    font-weight:500;
+    color:#cbd5e1;
+}
+
+.dashboard-time{
+    font-size:30px;
+    font-weight:700;
+    color:#60a5fa;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.header-left{
+    display:flex;
+    flex-direction:column;
+}
+
+.header-left h1{
+    font-size:34px;
+    font-weight:700;
+    color:#ffffff;
+    margin:0;
+}
+
+.header-left p{
+    margin-top:8px;
+    font-size:22px;
+    font-weight:500;
+    color:#cbd5e1;
+}
+
+.header-right{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+}
+
+
+
+.date{
+    margin-top:6px;
+    font-size:16px;
+    color:#cbd5e1;
+}
+.selected-files-box{
+    margin-top:15px;
+    height:120px;
+    overflow-y:auto;
+    background:#334155;
+    border:1px solid #475569;
+    border-radius:10px;
+    padding:10px;
+}
+
+/* EACH FILE ROW */
+.file-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    padding:10px 8px;
+    border-bottom:1px solid #475569;
+}
+
+.file-item:last-child{
+    border-bottom:none;
+}
+
+/* FILE NAME */
+.file-name{
+    flex:1;
+    color:white;
+    word-break:break-word;
+    line-height:1.4;
+    
+}
+
+/* REMOVE BUTTON */.file-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    padding:10px 8px;
+    border-bottom:1px solid #475569;
+}
+
+.file-name{
+    flex:1;
+    color:white;
+    word-break:break-word;
+    line-height:1.4;
+}
+
+.remove-file-btn{
+    width:30px;
+    height:30px;
+    min-width:30px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    margin-top:2px;
+
+    border:none;
+    border-radius:50%;
+    background:#ef4444;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    flex-shrink:0;
+}
+
+.remove-file-btn:hover{
+    background:#dc2626;
 }

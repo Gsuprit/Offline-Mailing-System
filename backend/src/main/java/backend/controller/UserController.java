@@ -65,41 +65,31 @@ public User updateUser(
         @RequestBody User updatedUser
 ) {
 
-    User user =
-            userRepository.findById(userId)
-                    .orElseThrow();
+    User user = userRepository.findById(userId).orElseThrow();
 
-    user.setUsername(
-            updatedUser.getUsername()
-    );
+    user.setUsername(updatedUser.getUsername());
+    user.setDob(updatedUser.getDob());
 
-    user.setDob(
-            updatedUser.getDob()
-    );
+    user.setQ1(updatedUser.getQ1());
+    user.setA1(updatedUser.getA1());
 
-    user.setQ1(
-            updatedUser.getQ1()
-    );
+    user.setQ2(updatedUser.getQ2());
+    user.setA2(updatedUser.getA2());
 
-    user.setA1(
-            updatedUser.getA1()
-    );
+    // Preserve existing values if frontend doesn't send them
+    if (updatedUser.getPassword() != null) {
+        user.setPassword(updatedUser.getPassword());
+    }
 
-    user.setQ2(
-            updatedUser.getQ2()
-    );
+    if (updatedUser.getPasswordChangeDate() != null) {
+        user.setPasswordChangeDate(updatedUser.getPasswordChangeDate());
+    }
 
-    user.setA2(
-            updatedUser.getA2()
-    );
+    if (updatedUser.getPasswordReminderSent() != null) {
+        user.setPasswordReminderSent(updatedUser.getPasswordReminderSent());
+    }
 
-    user.setPasswordChangeDate(
-            updatedUser.getPasswordChangeDate()
-    );
-
-    user.setPasswordReminderSent(false);
     return userRepository.save(user);
 }
-
 
 }

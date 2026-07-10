@@ -50,30 +50,23 @@ const updateProfile = async () => {
 try {
 
   console.log(user);
-  const response =
-    await axios.put(
-      `http://localhost:8080/api/user/${userId}`,
-      {
-        username:
-          user.username,
+  const response = await axios.put(
+    `http://localhost:8080/api/user/${userId}`,
+    {
+        username: user.username,
+        dob: user.dob,
 
-        dob:
-          user.dob,
+        q1: user.q1,
+        a1: user.a1,
 
-        q1:
-          user.q1,
+        q2: user.q2,
+        a2: user.a2,
 
-        a1:
-          user.a1,
-
-        q2:
-          user.q2,
-
-        a2:
-          user.a2,
-        passwordChangeDate: user.passwordChangeDate
-      }
-    );
+        password: user.password,
+        passwordChangeDate: user.passwordChangeDate,
+        passwordReminderSent: user.passwordReminderSent
+    }
+);
 
   console.log(
     response.data
@@ -257,27 +250,7 @@ return (
 
     <br /><br />
 
-    <label className="profile-label">
-  Password Change Date
-</label>
-
-<input
-  type="date"
-  value={user.passwordChangeDate || ""}
-  disabled={!editMode}
-  min={
-    new Date()
-      .toISOString()
-      .split("T")[0]
-  }
-  onChange={(e) =>
-    setUser({
-      ...user,
-      passwordChangeDate:
-        e.target.value
-    })
-  }
-/>
+   
 
     <br />
     <br></br>

@@ -1,8 +1,9 @@
-import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/Login.css";
+import { useRef, useEffect } from "react";
+
 
 function Login() {
 
@@ -16,6 +17,21 @@ function Login() {
 
   const [showPassword, setShowPassword] =
   useState(false);
+
+  const emailRef = useRef(null);
+const passwordRef = useRef(null);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    if (!userId.trim()) {
+      emailRef.current?.focus();
+    } else if (!password.trim()) {
+      passwordRef.current?.focus();
+    }
+  }, 2000);
+
+  return () => clearTimeout(timer);
+}, [userId, password]);
 
   const validate = () => {
 
@@ -39,60 +55,73 @@ function Login() {
 
   const loginUser = async () => {
 
-    if (!validate()) {
+  if (!validate()) {
+    return;
+  }
+
+  try {
+
+    const response = await axios.get(
+      "http://localhost:8080/api/users"
+    );
+
+    const users = response.data;
+
+    // Check whether Mail ID exists
+    const existingUser = users.find(
+      (user) => user.userId === userId
+    );
+
+    if (!existingUser) {
+
+      setErrors({
+        userId: "Mail ID doesn't exist",
+        password: ""
+      });
+
+      setMessage("");
       return;
     }
 
-    try {
+    // Check password
+    if (existingUser.password !== password) {
 
-      const response =
-        await axios.get(
-          "http://localhost:8080/api/users"
-        );
+      setErrors({
+        userId: "",
+        password: "Wrong password"
+      });
 
-      const users = response.data;
-
-      const validUser = users.find(
-        (user) =>
-          user.userId === userId &&
-          user.password === password
-      );
-
-      if (validUser) {
-
-       localStorage.setItem(
-       "isLoggedIn",
-       "true"
-      ); 
-      
-       localStorage.setItem(
-      "loggedInUser",
-       validUser.userId
-       );
-       
-      setMessage(
-        "Login Successful"
-      );
-
-      setTimeout(() => {
-    navigate("/dashboard");
-  }, 1000);
-      
-
-    } else {
-
-        setMessage(
-          "Invalid User ID or Password"
-        );
-      }
-
-    } catch (error) {
-
-      setMessage(
-        "Backend Connection Failed"
-      );
+      setMessage("");
+      return;
     }
-  };
+
+    // Login Successful
+    setErrors({});
+    setMessage("Login Successful");
+
+    localStorage.setItem(
+      "isLoggedIn",
+      "true"
+    );
+
+    localStorage.setItem(
+      "loggedInUser",
+      existingUser.userId
+    );
+
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1000);
+
+  } catch (error) {
+
+    console.error(error);
+
+    setMessage(
+      "Backend Connection Failed"
+    );
+  }
+};
 
   return (
 
@@ -117,13 +146,22 @@ function Login() {
           <label>Mail ID</label>
 
           <input
-            type="text"
-            placeholder="Ex: example@gmail.com"
-            value={userId}
-            onChange={(e) =>
-              setUserId(e.target.value)
-            }
-          />
+  ref={emailRef}
+  type="text"
+  placeholder="Ex: example@gmail.com"
+  value={userId}
+  onChange={(e) => {
+    setUserId(e.target.value);
+
+    setErrors((prev) => ({
+      ...prev,
+      userId: "",
+      password: "",   
+    }));
+
+    setMessage("");
+  }}
+/>
 
           <span className="error">
             {errors.userId}
@@ -137,18 +175,26 @@ function Login() {
 
           <div className="password-wrapper">
 
-  <input
-    type={
-      showPassword
-        ? "text"
-        : "password"
-    }
-    placeholder="8-12 chars, 1 capital, 1 special"
-    value={password}
-    onChange={(e) =>
-      setPassword(e.target.value)
-    }
-  />
+ <input
+  ref={passwordRef}
+  type={showPassword ? "text" : "password"}
+  placeholder="8-12 chars, 1 capital, 1 special"
+  value={password}
+  onChange={(e) => {
+    setPassword(e.target.value);
+
+    setErrors((prev) => ({
+      ...prev,
+      userId: "",      
+      password: "",
+    }));
+
+    setMessage("");
+  }}
+  onCopy={(e) => e.preventDefault()}
+  onPaste={(e) => e.preventDefault()}
+  onCut={(e) => e.preventDefault()}
+/>
 
   <span
     className="eye-icon"
@@ -158,7 +204,7 @@ function Login() {
       )
     }
   >
-    {showPassword ? "🙈" : "👁️"}
+    {showPassword ? "🙈" : "👀"}
   </span>
 
 </div>
@@ -176,11 +222,11 @@ function Login() {
         <div className="links">
 
           <Link to="/change-password">
-            Change Password
+            Change Password?
           </Link>
 
           <Link to="/forgot-password">
-            Forgot Password
+            Forgot Password?
           </Link>
 
         </div>
@@ -188,7 +234,7 @@ function Login() {
         <div className="register-link">
 
           <Link to="/register">
-            New User? Register Here
+            Create Account?
           </Link>
 
         </div>

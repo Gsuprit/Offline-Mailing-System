@@ -1,9 +1,10 @@
 package backend.repository;
 
-import backend.model.Mail;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import backend.model.Mail;
 
 public interface MailRepository
         extends JpaRepository<Mail, Integer> {
@@ -21,3 +22,4 @@ public interface MailRepository
             Boolean isRead
     );
 }
+

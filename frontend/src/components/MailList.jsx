@@ -24,6 +24,22 @@ useState("");
 const [attachments, setAttachments] =
 useState([]);
 
+const handleFileChange = (e) => {
+
+  const newFiles = Array.from(e.target.files);
+
+  setAttachments((prev) => [...prev, ...newFiles]);
+
+};
+
+const removeFile = (index) => {
+
+  setAttachments((prev) =>
+    prev.filter((_, i) => i !== index)
+  );
+
+};
+
 const loggedInUser =
 localStorage.getItem(
 "loggedInUser"
@@ -263,12 +279,43 @@ return (
     <input
   type="file"
   multiple
-  onChange={(e) =>
-    setAttachments(
-      Array.from(e.target.files)
-    )
-  }
+  onChange={handleFileChange}
 />
+
+<div className="selected-files-box">
+
+  {attachments.length === 0 ? (
+
+    <p>No files selected</p>
+
+  ) : (
+
+    attachments.map((file, index) => (
+
+     <div
+  key={index}
+  className="file-item"
+>
+
+  <span className="file-name">
+    {file.name}
+  </span>
+
+  <button
+    type="button"
+    className="remove-file-btn"
+    onClick={() => removeFile(index)}
+  >
+    ✕
+  </button>
+
+</div>
+
+    ))
+
+  )}
+
+</div>
 
     <br /><br />
 

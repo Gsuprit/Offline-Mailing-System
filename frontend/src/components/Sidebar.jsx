@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 
 function Sidebar({
   selectedMenu,
@@ -7,202 +6,114 @@ function Sidebar({
   setSelectedMail
 }) {
 
-const [currentTime, setCurrentTime] =
-  useState("");{
-    useEffect(() => {
-
-  const updateTime = () => {
-
-    const now = new Date();
-
-    setCurrentTime(
-      now.toLocaleTimeString(
-        "en-US",
-        {
-          hour: "numeric",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true
-        }
-      )
-    );
-
-  };
-
-  updateTime();
-
-  const timer =
-    setInterval(
-      updateTime,
-      1000
-    );
-
-  return () =>
-    clearInterval(timer);
-
-}, []);
-  }
-
-  const username =
-localStorage.getItem(
-  "loggedInUser"
-);
-
-const hour =
-new Date().getHours();
-
-let greeting = "";
-
-if(hour < 12){
-  greeting = "🌅 Good Morning";
-}
-else if(hour < 18){
-  greeting = "🌞 Good Afternoon";
-}
-else{
-  greeting = "🌙 Good Evening";
-}
-
   const navigate = useNavigate();
 
   const handleMenuClick = (menu) => {
-
     setSelectedMenu(menu);
     setSelectedMail(null);
   };
 
   const handleLogout = () => {
 
-  const confirmLogout =
-    window.confirm(
+    const confirmLogout = window.confirm(
       "Are you sure you want to logout?"
     );
 
-  if (confirmLogout) {
+    if (confirmLogout) {
 
-    localStorage.clear();
+      localStorage.clear();
 
-    window.location.href = "/";
+      navigate("/");
 
-  }
+    }
 
-};
+  };
 
   return (
 
-    <div>
+    <div className="sidebar-container">
 
-      <h2 className="welcome-text">
-
-  {greeting}
-
-  <br /><br />
-
-  {username}
-
-</h2>
-
-      <p
-        className={
-          selectedMenu === "inbox"
-            ? "active-menu"
-            : ""
-        }
-        onClick={() =>
-          handleMenuClick("inbox")
-        }
-      >
-        📥 Inbox
-      </p>
-
-      <p
-        className={
-          selectedMenu === "sent"
-            ? "active-menu"
-            : ""
-        }
-        onClick={() =>
-          handleMenuClick("sent")
-        }
-      >
-        📤 Sent
-      </p>
-
-      <p
-        className={
-          selectedMenu === "compose"
-            ? "active-menu"
-            : ""
-        }
-        onClick={() =>
-          handleMenuClick("compose")
-        }
-      >
-        ✉ Compose Mail
-      </p>
-
-      <p
-        className={
-          selectedMenu === "calendar"
-            ? "active-menu"
-            : ""
-        }
-        onClick={() =>
-          handleMenuClick("calendar")
-        }
-      >
-        📅 Calendar
-      </p>
+      <div className="sidebar-menu">
 
         <p
-  className={
-    selectedMenu === "profile"
-      ? "active-menu"
-      : ""
-  }
-  onClick={() =>
-    handleMenuClick("profile")
-  }
->
-  👤 Profile
-</p>
+          className={
+            selectedMenu === "inbox"
+              ? "active-menu"
+              : ""
+          }
+          onClick={() =>
+            handleMenuClick("inbox")
+          }
+        >
+          📥 Inbox
+        </p>
 
-      <p
-        onClick={handleLogout}
-      >
-        ↪ Logout
-      </p>
-      <br></br>
+        <p
+          className={
+            selectedMenu === "sent"
+              ? "active-menu"
+              : ""
+          }
+          onClick={() =>
+            handleMenuClick("sent")
+          }
+        >
+          📤 Sent
+        </p>
 
-      <br></br>
-    <div
-  style={{
-    marginTop: "auto",
-    paddingTop: "30px",
-    textAlign: "left"
-    
-  }}
->
+        <p
+          className={
+            selectedMenu === "compose"
+              ? "active-menu"
+              : ""
+          }
+          onClick={() =>
+            handleMenuClick("compose")
+          }
+        >
+          ✉ Compose Mail
+        </p>
 
-  <p
-    style={{
-      color: "#60a5fa",
-      fontSize: "22px",
-      fontWeight: "700",
-      fontWeight: "bold",
-      letterSpacing:"2px",
-      
-    }}
-  >
-    🕒 {currentTime}
-  </p>
+        <p
+          className={
+            selectedMenu === "calendar"
+              ? "active-menu"
+              : ""
+          }
+          onClick={() =>
+            handleMenuClick("calendar")
+          }
+        >
+          📅 Calendar
+        </p>
 
-</div>
+        <p
+          className={
+            selectedMenu === "profile"
+              ? "active-menu"
+              : ""
+          }
+          onClick={() =>
+            handleMenuClick("profile")
+          }
+        >
+          👤 Profile
+        </p>
+
+      </div>
+
+      <div className="sidebar-bottom">
+
+        <p onClick={handleLogout}>
+          ↪ Logout
+        </p>
+
+      </div>
 
     </div>
 
-    
   );
+
 }
 
 export default Sidebar;

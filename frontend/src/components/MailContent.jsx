@@ -1,11 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
+
 function MailContent({
-  selectedMail,
-  setSelectedMenu,
-  setReplyMail
+  selectedMail
+  
 }) {
+
+  const [showReplyBox, setShowReplyBox] = useState(false);
+const [replyMessage, setReplyMessage] = useState("");
 
   useEffect(() => {
 
@@ -84,17 +87,70 @@ function MailContent({
   };
 
   const replyToMail = () => {
+  setShowReplyBox(true);
+};
 
-    setReplyMail(
-      selectedMail
+const sendReply = async () => {
+
+  if (!replyMessage.trim()) {
+    alert("Please enter a reply.");
+    return;
+  }
+
+  try {
+
+    const loggedInUser = localStorage.getItem("loggedInUser");
+
+const receiver =
+  selectedMail.senderId === loggedInUser
+    ? selectedMail.receiverId
+    : selectedMail.senderId;
+
+const originalMessage = selectedMail.message.includes("----- Original Message -----")
+  ? selectedMail.message
+  : `----- Original Message -----
+
+${selectedMail.message}`;
+const replyMail = {
+
+  senderId: loggedInUser,
+
+  receiverId: receiver,
+
+  subject: selectedMail.subject.startsWith("Re:")
+  ? selectedMail.subject
+  : "Re: " + selectedMail.subject,
+message: `${originalMessage}
+
+----- Reply -----
+
+${replyMessage}`,
+
+  attachments: null
+
+};
+
+    await axios.post(
+      "http://localhost:8080/api/mails/send",
+      replyMail
     );
 
-    setSelectedMenu(
-      "compose"
-    );
+    alert("Reply sent successfully.");
 
-  };
+    setReplyMessage("");
+    setShowReplyBox(false);
 
+    window.location.reload();
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert("Reply failed.");
+
+  }
+
+};
   return (
 
     <div>
@@ -177,24 +233,51 @@ function MailContent({
 
       )}
 
-      <button
-        style={{
-          width: "100%",
-          marginTop: "20px",
-          marginBottom: "10px"
-        }}
-        onClick={replyToMail}
-      >
-        ↩ Reply
-      </button>
+     <button
+  style={{
+    width: "100%",
+    marginTop: "20px",
+    marginBottom: "15px"
+  }}
+  onClick={replyToMail}
+>
+  ↩ Reply
+</button>
 
-      <button
-        className="delete-btn"
-        onClick={deleteMail}
-      >
-        🗑 Delete Mail
-      </button>
+{showReplyBox && (
 
+  <div style={{ marginBottom: "20px" }}>
+
+    <textarea
+      placeholder="Type your reply..."
+      value={replyMessage}
+      onChange={(e) => setReplyMessage(e.target.value)}
+      rows="6"
+      style={{
+        width: "100%",
+        marginBottom: "10px"
+      }}
+    />
+
+    <button
+      style={{
+        width: "100%"
+      }}
+      onClick={sendReply}
+    >
+      📤 Send Reply
+    </button>
+
+  </div>
+
+)}
+
+<button
+  className="delete-btn"
+  onClick={deleteMail}
+>
+  🗑 Delete Mail
+</button>
     </div>
 
   );

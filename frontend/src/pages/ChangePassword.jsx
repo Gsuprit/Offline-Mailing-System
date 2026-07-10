@@ -1,96 +1,108 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../css/ChangePassword.css";
 
 function ChangePassword() {
 
+  const navigate = useNavigate();
+
+  const emailRef = useRef(null);
+  const oldPasswordRef = useRef(null);
+  const newPasswordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
+
   const [userId, setUserId] = useState("");
-  const [oldPassword,
-    setOldPassword] = useState("");
-
-  const [newPassword,
-    setNewPassword] = useState("");
-
-  const [confirmPassword,
-    setConfirmPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
 
-  const [message, setMessage] =
-    useState("");
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const [showOldPassword,
-setShowOldPassword] =
-useState(false);
+  useEffect(() => {
 
-const [showNewPassword,
-setShowNewPassword] =
-useState(false);
+    const timer = setTimeout(() => {
 
-const [showConfirmPassword,
-setShowConfirmPassword] =
-useState(false);
+      if (!userId.trim()) {
+
+        emailRef.current?.focus();
+
+      } else if (!oldPassword.trim()) {
+
+        oldPasswordRef.current?.focus();
+
+      } else if (!newPassword.trim()) {
+
+        newPasswordRef.current?.focus();
+
+      } else if (!confirmPassword.trim()) {
+
+        confirmPasswordRef.current?.focus();
+
+      }
+
+    }, 2000);
+
+    return () => clearTimeout(timer);
+
+  }, [userId, oldPassword, newPassword, confirmPassword]);
 
   const validate = () => {
 
     let newErrors = {};
 
-    if (!userId.trim()) {
-
+    if (!userId.trim())
       newErrors.userId = "Required";
-    }
 
-    if (!oldPassword.trim()) {
-
-      newErrors.oldPassword =
-        "Required";
-    }
+    if (!oldPassword.trim())
+      newErrors.oldPassword = "Required";
 
     if (!newPassword.trim()) {
 
-      newErrors.newPassword =
-        "Required";
+      newErrors.newPassword = "Required";
 
     } else if (
-      !/^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,12}$/
-        .test(newPassword)
+      !/^(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,12}$/.test(newPassword)
     ) {
 
       newErrors.newPassword =
         "8-12 chars, 1 capital, 1 special";
+
     }
 
     if (!confirmPassword.trim()) {
 
-      newErrors.confirmPassword =
-        "Required";
+      newErrors.confirmPassword = "Required";
 
-    } else if (
-      confirmPassword !== newPassword
-    ) {
+    } else if (confirmPassword !== newPassword) {
 
       newErrors.confirmPassword =
         "Passwords do not match";
+
     }
 
     setErrors(newErrors);
 
-    return Object.keys(newErrors)
-      .length === 0;
+    return Object.keys(newErrors).length === 0;
+
   };
 
-  const changePassword = async () => {
+  const changePassword = async (e) => {
 
-    if (!validate()) {
-      return;
-    }
+    e.preventDefault();
+
+    if (!validate()) return;
 
     try {
 
-      const response =
-        await axios.get(
-          "http://localhost:8080/api/users"
-        );
+      const response = await axios.get(
+        "http://localhost:8080/api/users"
+      );
 
       const users = response.data;
 
@@ -102,24 +114,19 @@ useState(false);
 
       if (!validUser) {
 
-        setMessage(
-          "Invalid User ID or Old Password"
-        );
-
+        setMessage("Invalid User ID or Old Password");
         return;
+
       }
 
-      validUser.password =
-        newPassword;
+      validUser.password = newPassword;
 
-      await axios.post(
-        "http://localhost:8080/api/register",
-        validUser
-      );
+      await axios.put(
+  `http://localhost:8080/api/user/${userId}`,
+  validUser
+);
 
-      setMessage(
-        "Password Changed Successfully"
-      );
+      setMessage("Password Changed Successfully");
 
       setUserId("");
       setOldPassword("");
@@ -128,49 +135,57 @@ useState(false);
 
       setErrors({});
 
-    } catch (error) {
+    } catch {
 
-      setMessage(
-        "Backend Connection Failed"
-      );
+      setMessage("Backend Connection Failed");
+
     }
-  };
 
+  };
   return (
 
-    <div className="change-container">
+  <div className="change-container">
 
-      <div className="change-box">
+    <div className="change-box">
+
+      <form onSubmit={changePassword}>
 
         <h1>Change Password</h1>
 
-       <p
-  className={
-    message ===
-    "Password Changed Successfully"
-      ? "success-message"
-      : "error-message"
-  }
->
-  {message}
-</p>
+        <p
+          className={
+            message === "Password Changed Successfully"
+              ? "success-message"
+              : "error-message"
+          }
+        >
+          {message}
+        </p>
 
         <div className="row">
 
           <label>Mail ID</label>
 
           <input
+            ref={emailRef}
             type="text"
             placeholder="Ex: example@gmail.com"
             value={userId}
-            onChange={(e) =>
-              setUserId(e.target.value)
-            }
+            onChange={(e) => {
+
+              setUserId(e.target.value);
+
+              setErrors((prev) => ({
+                ...prev,
+                userId: ""
+              }));
+
+              setMessage("");
+
+            }}
           />
 
-          <span className="error">
-            {errors.userId}
-          </span>
+          <span className="error">{errors.userId}</span>
 
         </div>
 
@@ -178,22 +193,40 @@ useState(false);
 
           <label>Old Password</label>
 
-          <input
-            type={showOldPassword
-    ? "text"
-    : "password"}
-              placeholder="8-12 chars, 1 capital, 1 special"
-            value={oldPassword}
-            onChange={(e) =>
-              setOldPassword(
-                e.target.value
-              )
-            }
-          />
+          <div className="password-wrapper">
 
-          <span className="error">
-            {errors.oldPassword}
-          </span>
+            <input
+              ref={oldPasswordRef}
+              type={showOldPassword ? "text" : "password"}
+              placeholder="Enter Old Password"
+              value={oldPassword}
+              onChange={(e) => {
+
+                setOldPassword(e.target.value);
+
+                setErrors((prev) => ({
+                  ...prev,
+                  oldPassword: ""
+                }));
+
+                setMessage("");
+
+              }}
+              onCopy={(e)=>e.preventDefault()}
+              onPaste={(e)=>e.preventDefault()}
+              onCut={(e)=>e.preventDefault()}
+            />
+
+            <span
+              className="eye-icon"
+              onClick={() => setShowOldPassword(!showOldPassword)}
+            >
+              {showOldPassword ? "🙈" : "👀"}
+            </span>
+
+          </div>
+
+          <span className="error">{errors.oldPassword}</span>
 
         </div>
 
@@ -201,22 +234,40 @@ useState(false);
 
           <label>New Password</label>
 
-          <input
-            type={showOldPassword
-    ? "text"
-    : "password"}
-            placeholder="8-12 chars, 1 capital, 1 special"
-            value={newPassword}
-            onChange={(e) =>
-              setNewPassword(
-                e.target.value
-              )
-            }
-          />
+          <div className="password-wrapper">
 
-          <span className="error">
-            {errors.newPassword}
-          </span>
+            <input
+              ref={newPasswordRef}
+              type={showNewPassword ? "text" : "password"}
+              placeholder="8-12 chars, 1 capital, 1 special"
+              value={newPassword}
+              onChange={(e) => {
+
+                setNewPassword(e.target.value);
+
+                setErrors((prev) => ({
+                  ...prev,
+                  newPassword: ""
+                }));
+
+                setMessage("");
+
+              }}
+              onCopy={(e)=>e.preventDefault()}
+              onPaste={(e)=>e.preventDefault()}
+              onCut={(e)=>e.preventDefault()}
+            />
+
+            <span
+              className="eye-icon"
+              onClick={() => setShowNewPassword(!showNewPassword)}
+            >
+              {showNewPassword ? "🙈" : "👀"}
+            </span>
+
+          </div>
+
+          <span className="error">{errors.newPassword}</span>
 
         </div>
 
@@ -224,30 +275,71 @@ useState(false);
 
           <label>Confirm Password</label>
 
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) =>
-              setConfirmPassword(
-                e.target.value
-              )
-            }
-          />
+          <div className="password-wrapper">
 
-          <span className="error">
-            {errors.confirmPassword}
-          </span>
+            <input
+              ref={confirmPasswordRef}
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => {
+
+                setConfirmPassword(e.target.value);
+
+                setErrors((prev) => ({
+                  ...prev,
+                  confirmPassword: ""
+                }));
+
+                setMessage("");
+
+              }}
+              onCopy={(e)=>e.preventDefault()}
+              onPaste={(e)=>e.preventDefault()}
+              onCut={(e)=>e.preventDefault()}
+            />
+
+            <span
+              className="eye-icon"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? "🙈" : "👀"}
+            </span>
+
+          </div>
+
+          <span className="error">{errors.confirmPassword}</span>
 
         </div>
 
-        <button onClick={changePassword}>
-          SAVE
-        </button>
+        <div className="button-group">
 
-      </div>
+          <button
+            type="button"
+            className="back-btn"
+            onClick={() => navigate("/")}
+          >
+            BACK
+          </button>
+
+          <button
+            type="submit"
+            className="save-btn"
+          >
+            SAVE
+          </button>
+
+        </div>
+
+      </form>
 
     </div>
-  );
+
+  </div>
+
+);
+
 }
 
 export default ChangePassword;
+
