@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 function Sidebar({
   selectedMenu,
   setSelectedMenu,
-  setSelectedMail
+  setSelectedMail,
+  onLogout
 }) {
 
   const navigate = useNavigate();
@@ -104,7 +105,7 @@ function Sidebar({
 
       <div className="sidebar-bottom">
 
-        <p onClick={handleLogout}>
+        <p onClick={onLogout}>
           ↪ Logout
         </p>
 

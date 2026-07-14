@@ -1,127 +1,161 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/Login.css";
-import { useRef, useEffect } from "react";
-
 
 function Login() {
 
   const navigate = useNavigate();
+
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
 
   const [errors, setErrors] = useState({});
-
   const [message, setMessage] = useState("");
 
   const [showPassword, setShowPassword] =
-  useState(false);
+    useState(false);
+
+  const [showPopup, setShowPopup] = useState(false);
 
   const emailRef = useRef(null);
-const passwordRef = useRef(null);
+  const passwordRef = useRef(null);
+  const loginBtnRef = useRef(null);
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    if (!userId.trim()) {
-      emailRef.current?.focus();
-    } else if (!password.trim()) {
-      passwordRef.current?.focus();
-    }
-  }, 2000);
+  // First cursor only
+  useEffect(() => {
+    emailRef.current?.focus();
+  }, []);
 
-  return () => clearTimeout(timer);
-}, [userId, password]);
+ const validate = () => {
 
-  const validate = () => {
+  let newErrors = {};
 
-    let newErrors = {};
+  if (!userId.trim()) {
 
-    if (!userId.trim()) {
+    newErrors.userId = "Required";
 
-      newErrors.userId = "Required";
-    }
+  }
+  else if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(userId)) {
 
-    if (!password.trim()) {
+    newErrors.userId = "Enter a valid mail ID";
 
-      newErrors.password = "Required";
-    }
+  }
 
-    setErrors(newErrors);
+  if (!password.trim()) {
 
-    return Object.keys(newErrors)
-      .length === 0;
-  };
+    newErrors.password = "Required";
+
+  }
+
+  setErrors(newErrors);
+
+  if (newErrors.userId) {
+
+    emailRef.current.focus();
+
+    return false;
+
+  }
+
+  if (newErrors.password) {
+
+    passwordRef.current.focus();
+
+    return false;
+
+  }
+
+  return true;
+
+};
 
   const loginUser = async () => {
 
-  if (!validate()) {
-    return;
-  }
+    if (!validate()) return;
 
-  try {
+    try {
 
-    const response = await axios.get(
-      "http://localhost:8080/api/users"
-    );
+      const response =
+        await axios.get(
+          "http://localhost:8080/api/users"
+        );
 
-    const users = response.data;
+      const users = response.data;
 
-    // Check whether Mail ID exists
-    const existingUser = users.find(
-      (user) => user.userId === userId
-    );
+      const existingUser =
+        users.find(
+          (user) =>
+            user.userId === userId
+        );
 
-    if (!existingUser) {
+      if (!existingUser) {
 
-      setErrors({
-        userId: "Mail ID doesn't exist",
-        password: ""
-      });
+        setErrors({
+  userId: "Mail ID doesn't exist",
+  password: ""
+});
 
-      setMessage("");
-      return;
+setMessage("");
+
+emailRef.current.focus();
+
+return;
+
+      }
+
+      if (
+        existingUser.password !==
+        password
+      ) {
+
+        setErrors({
+  userId: "",
+  password: "Wrong password"
+});
+
+setMessage("");
+
+passwordRef.current.focus();
+
+return;
+
+      }
+
+     setErrors({});
+
+setMessage("Login Successful");
+
+setShowPopup(true);
+
+localStorage.setItem(
+  "isLoggedIn",
+  "true"
+);
+
+localStorage.setItem(
+  "loggedInUser",
+  existingUser.userId
+);
+
+setTimeout(() => {
+
+  navigate("/dashboard");
+
+}, 2000);
     }
 
-    // Check password
-    if (existingUser.password !== password) {
+    catch (error) {
 
-      setErrors({
-        userId: "",
-        password: "Wrong password"
-      });
+      console.error(error);
 
-      setMessage("");
-      return;
+      setMessage(
+        "Backend Connection Failed"
+      );
+
     }
 
-    // Login Successful
-    setErrors({});
-    setMessage("Login Successful");
-
-    localStorage.setItem(
-      "isLoggedIn",
-      "true"
-    );
-
-    localStorage.setItem(
-      "loggedInUser",
-      existingUser.userId
-    );
-
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1000);
-
-  } catch (error) {
-
-    console.error(error);
-
-    setMessage(
-      "Backend Connection Failed"
-    );
-  }
-};
+  };
 
   return (
 
@@ -132,34 +166,55 @@ useEffect(() => {
         <h1>LOGIN</h1>
 
         <p
-  className={
-    message === "Login Successful"
-      ? "success-message"
-      : "error-message"
-  }
->
-  {message}
-</p>
+          className={
+            message ===
+            "Login Successful"
+              ? "success-message"
+              : "error-message"
+          }
+        >
+          {message}
+        </p>
+
+        {/* Mail ID */}
 
         <div className="row">
 
           <label>Mail ID</label>
 
-          <input
+         <input
   ref={emailRef}
   type="text"
   placeholder="Ex: example@gmail.com"
   value={userId}
   onChange={(e) => {
-    setUserId(e.target.value);
+
+    let value = e.target.value;
+
+    // Allow only letters, numbers, @ and .
+    value = value.replace(/[^a-zA-Z0-9@.]/g, "");
+
+    setUserId(value);
 
     setErrors((prev) => ({
       ...prev,
       userId: "",
-      password: "",   
+      password: ""
     }));
 
     setMessage("");
+
+  }}
+  onKeyDown={(e) => {
+
+    if (e.key === "Enter") {
+
+      e.preventDefault();
+
+      passwordRef.current.focus();
+
+    }
+
   }}
 />
 
@@ -169,45 +224,68 @@ useEffect(() => {
 
         </div>
 
+        {/* Password */}
+
         <div className="row">
 
           <label>Password</label>
 
           <div className="password-wrapper">
 
- <input
-  ref={passwordRef}
-  type={showPassword ? "text" : "password"}
-  placeholder="8-12 chars, 1 capital, 1 special"
-  value={password}
-  onChange={(e) => {
-    setPassword(e.target.value);
+            <input
+              ref={passwordRef}
+              type={
+                showPassword
+                  ? "text"
+                  : "password"
+              }
+              placeholder="8-12 chars, 1 capital, 1 special"
+              value={password}
+              onChange={(e) => {
 
-    setErrors((prev) => ({
-      ...prev,
-      userId: "",      
-      password: "",
-    }));
+                setPassword(
+                  e.target.value
+                );
 
-    setMessage("");
-  }}
-  onCopy={(e) => e.preventDefault()}
-  onPaste={(e) => e.preventDefault()}
-  onCut={(e) => e.preventDefault()}
-/>
+                setErrors(prev => ({
+                  ...prev,
+                  userId: "",
+                  password: ""
+                }));
 
-  <span
-    className="eye-icon"
-    onClick={() =>
-      setShowPassword(
-        !showPassword
-      )
-    }
-  >
-    {showPassword ? "🙈" : "👀"}
-  </span>
+                setMessage("");
 
-</div>
+              }}
+              onCopy={(e)=>e.preventDefault()}
+              onPaste={(e)=>e.preventDefault()}
+              onCut={(e)=>e.preventDefault()}
+              onKeyDown={(e)=>{
+
+                if(e.key==="Enter"){
+
+                  e.preventDefault();
+
+                  loginBtnRef.current.focus();
+
+                }
+
+              }}
+            />
+
+            <span
+              className="eye-icon"
+              onClick={() =>
+                setShowPassword(
+                  !showPassword
+                )
+              }
+            >
+              {showPassword
+                ? "🙈"
+                : "👀"}
+            </span>
+
+          </div>
 
           <span className="error">
             {errors.password}
@@ -215,7 +293,23 @@ useEffect(() => {
 
         </div>
 
-        <button onClick={loginUser}>
+        {/* Login */}
+
+        <button
+          ref={loginBtnRef}
+          onClick={loginUser}
+          onKeyDown={(e)=>{
+
+            if(e.key==="Enter"){
+
+              e.preventDefault();
+
+              loginUser();
+
+            }
+
+          }}
+        >
           LOGIN
         </button>
 
@@ -239,10 +333,33 @@ useEffect(() => {
 
         </div>
 
+          {/* Login Success Popup */}
+
+{showPopup && (
+
+  <div className="popup-overlay">
+
+    <div className="popup-box">
+
+      <h2>Login Successful</h2>
+
+      <p>Welcome Back!</p>
+
+      <p className="redirect-text">
+        Redirecting to Dashboard...
+      </p>
+
+    </div>
+
+  </div>
+
+)}
       </div>
 
     </div>
+
   );
+
 }
 
 export default Login;

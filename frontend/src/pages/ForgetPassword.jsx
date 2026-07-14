@@ -7,66 +7,75 @@ function ForgetPassword() {
 
   const navigate = useNavigate();
 
-  const emailRef = useRef(null);
-  const answer1Ref = useRef(null);
-  const answer2Ref = useRef(null);
-
   const [userId, setUserId] = useState("");
-  const [q1, setQ1] = useState("");
-  const [a1, setA1] = useState("");
-  const [q2, setQ2] = useState("");
-  const [a2, setA2] = useState("");
+const [q1, setQ1] = useState("");
+const [a1, setA1] = useState("");
+const [q2, setQ2] = useState("");
+const [a2, setA2] = useState("");
 
-  const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState({});
+const [message, setMessage] = useState("");
+const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+const validate = () => {
 
-    const timer = setTimeout(() => {
+  let newErrors = {};
 
-      if (!userId.trim()) {
+  if (!userId.trim())
+    newErrors.userId = "Required";
 
-        emailRef.current?.focus();
+  if (!q1)
+    newErrors.q1 = "Required";
 
-      } else if (!a1.trim()) {
+  if (!a1.trim())
+    newErrors.a1 = "Required";
 
-        answer1Ref.current?.focus();
+  if (!q2)
+    newErrors.q2 = "Required";
 
-      } else if (!a2.trim()) {
+  if (!a2.trim())
+    newErrors.a2 = "Required";
 
-        answer2Ref.current?.focus();
+  if (newErrors.userId) {
+  emailRef.current.focus();
+  return false;
+}
 
-      }
+if (newErrors.q1) {
+  q1Ref.current.focus();
+  return false;
+}
 
-    }, 2000);
+if (newErrors.a1) {
+  answer1Ref.current.focus();
+  return false;
+}
 
-    return () => clearTimeout(timer);
+if (newErrors.q2) {
+  q2Ref.current.focus();
+  return false;
+}
 
-  }, [userId, a1, a2]);
+if (newErrors.a2) {
+  answer2Ref.current.focus();
+  return false;
+}
 
-  const validate = () => {
+return true;
 
-    let newErrors = {};
+  setErrors(newErrors);
 
-    if (!userId.trim())
-      newErrors.userId = "Required";
+  return Object.keys(newErrors).length === 0;
+};
+  const emailRef = useRef(null);
+const q1Ref = useRef(null);
+const answer1Ref = useRef(null);
+const q2Ref = useRef(null);
+const answer2Ref = useRef(null);
+const submitBtnRef = useRef(null);
 
-    if (!q1)
-      newErrors.q1 = "Required";
-
-    if (!a1.trim())
-      newErrors.a1 = "Required";
-
-    if (!q2)
-      newErrors.q2 = "Required";
-
-    if (!a2.trim())
-      newErrors.a2 = "Required";
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
+useEffect(() => {
+  emailRef.current?.focus();
+}, []);
 
   const recoverPassword = async (e) => {
 
@@ -134,23 +143,22 @@ function ForgetPassword() {
             <label>Mail ID</label>
 
             <input
-              ref={emailRef}
-              type="text"
-              placeholder="Ex: example@gmail.com"
-              value={userId}
-              onChange={(e) => {
-
-                setUserId(e.target.value);
-
-                setErrors((prev) => ({
-                  ...prev,
-                  userId: ""
-                }));
-
-                setMessage("");
-
-              }}
-            />
+  ref={emailRef}
+  type="text"
+  placeholder="Ex: example@gmail.com"
+  value={userId}
+  onChange={(e) => {
+    setUserId(e.target.value);
+    setErrors((prev) => ({ ...prev, userId: "" }));
+    setMessage("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      q1Ref.current.focus();
+    }
+  }}
+/>
 
             <span className="error">{errors.userId}</span>
 
@@ -161,20 +169,20 @@ function ForgetPassword() {
             <label>Question 1</label>
 
             <select
-              value={q1}
-              onChange={(e) => {
-
-                setQ1(e.target.value);
-
-                setErrors((prev) => ({
-                  ...prev,
-                  q1: ""
-                }));
-
-                setMessage("");
-
-              }}
-            >
+  ref={q1Ref}
+  value={q1}
+  onChange={(e) => {
+    setQ1(e.target.value);
+    setErrors((prev) => ({ ...prev, q1: "" }));
+    setMessage("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      answer1Ref.current.focus();
+    }
+  }}
+>
 
               <option value="">Select</option>
               <option>What is your nickname?</option>
@@ -191,22 +199,21 @@ function ForgetPassword() {
             <label>Answer 1</label>
 
             <input
-              ref={answer1Ref}
-              type="text"
-              value={a1}
-              onChange={(e) => {
-
-                setA1(e.target.value);
-
-                setErrors((prev) => ({
-                  ...prev,
-                  a1: ""
-                }));
-
-                setMessage("");
-
-              }}
-            />
+  ref={answer1Ref}
+  type="text"
+  value={a1}
+  onChange={(e) => {
+    setA1(e.target.value);
+    setErrors((prev) => ({ ...prev, a1: "" }));
+    setMessage("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      q2Ref.current.focus();
+    }
+  }}
+/>
 
             <span className="error">{errors.a1}</span>
 
@@ -217,20 +224,20 @@ function ForgetPassword() {
             <label>Question 2</label>
 
             <select
-              value={q2}
-              onChange={(e) => {
-
-                setQ2(e.target.value);
-
-                setErrors((prev) => ({
-                  ...prev,
-                  q2: ""
-                }));
-
-                setMessage("");
-
-              }}
-            >
+  ref={q2Ref}
+  value={q2}
+  onChange={(e) => {
+    setQ2(e.target.value);
+    setErrors((prev) => ({ ...prev, q2: "" }));
+    setMessage("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      answer2Ref.current.focus();
+    }
+  }}
+>
 
               <option value="">Select</option>
               <option>What is your birthplace?</option>
@@ -247,22 +254,21 @@ function ForgetPassword() {
             <label>Answer 2</label>
 
             <input
-              ref={answer2Ref}
-              type="text"
-              value={a2}
-              onChange={(e) => {
-
-                setA2(e.target.value);
-
-                setErrors((prev) => ({
-                  ...prev,
-                  a2: ""
-                }));
-
-                setMessage("");
-
-              }}
-            />
+  ref={answer2Ref}
+  type="text"
+  value={a2}
+  onChange={(e) => {
+    setA2(e.target.value);
+    setErrors((prev) => ({ ...prev, a2: "" }));
+    setMessage("");
+  }}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitBtnRef.current.focus();
+    }
+  }}
+/>
 
             <span className="error">{errors.a2}</span>
 
@@ -279,11 +285,18 @@ function ForgetPassword() {
             </button>
 
             <button
-              type="submit"
-              className="submit-btn"
-            >
-              SUBMIT
-            </button>
+  ref={submitBtnRef}
+  type="submit"
+  className="submit-btn"
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      recoverPassword(e);
+    }
+  }}
+>
+  SUBMIT
+</button>
 
           </div>
 

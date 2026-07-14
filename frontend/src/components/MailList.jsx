@@ -1,10 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 function MailList({
 selectedMenu,
 setSelectedMail
 }) {
+
+const receiverRef = useRef(null);
+const subjectRef = useRef(null);
+const messageRef = useRef(null);
+const fileRef = useRef(null);
+const sendBtnRef = useRef(null);
+const fileInputRef = useRef(null);
 
 const [receiverId, setReceiverId] =
 useState("");
@@ -34,9 +41,15 @@ const handleFileChange = (e) => {
 
 const removeFile = (index) => {
 
-  setAttachments((prev) =>
-    prev.filter((_, i) => i !== index)
-  );
+    const updatedFiles = attachments.filter((_, i) => i !== index);
+
+    setAttachments(updatedFiles);
+
+    if (fileInputRef.current) {
+
+        fileInputRef.current.value = "";
+
+    }
 
 };
 
@@ -240,90 +253,128 @@ return (
     </p>
 
     <input
-      type="email"
-      placeholder="Receiver Email"
-      value={receiverId}
-      onChange={(e) =>
-        setReceiverId(
-          e.target.value
-        )
+  ref={receiverRef}
+  type="email"
+  placeholder="Receiver Email"
+  value={receiverId}
+  onChange={(e)=>setReceiverId(e.target.value)}
+  onKeyDown={(e)=>{
+      if(e.key==="Enter"){
+          e.preventDefault();
+          subjectRef.current.focus();
       }
-    />
+  }}
+/>
 
     <br /><br />
 
     <input
-      type="text"
-      placeholder="Subject"
-      value={subject}
-      onChange={(e) =>
-        setSubject(
-          e.target.value
-        )
+  ref={subjectRef}
+  type="text"
+  placeholder="Subject"
+  value={subject}
+  onChange={(e)=>setSubject(e.target.value)}
+  onKeyDown={(e)=>{
+      if(e.key==="Enter"){
+          e.preventDefault();
+          messageRef.current.focus();
       }
-    />
+  }}
+/>
 
     <br /><br />
 
     <textarea
-      rows="12"
-      placeholder="Write your message..."
-      value={message}
-      onChange={(e) =>
-        setMessage(
-          e.target.value
-        )
-      }
-    />
+    ref={messageRef}
+    rows="12"
+    placeholder="Write your message..."
+    value={message}
+    onChange={(e)=>setMessage(e.target.value)}
+    onKeyDown={(e)=>{
+        if(e.key==="Enter" && !e.shiftKey){
+            e.preventDefault();
+            fileRef.current.focus();
+        }
+    }}
+/>
+
+   <div className="file-upload-row">
 
     <input
-  type="file"
-  multiple
-  onChange={handleFileChange}
-/>
+        ref={fileInputRef}
+        type="file"
+        multiple
+        onChange={handleFileChange}
+    />
+
+    <span className="file-count">
+        {attachments.length} File{attachments.length !== 1 ? "s" : ""} Selected
+    </span>
+
+</div>
+
+{attachments.length > 0 && (
 
 <div className="selected-files-box">
 
-  {attachments.length === 0 ? (
+  {attachments.map((file,index)=>(
 
-    <p>No files selected</p>
-
-  ) : (
-
-    attachments.map((file, index) => (
-
-     <div
-  key={index}
-  className="file-item"
+    <div
+    key={index}
+    className="file-item"
 >
 
-  <span className="file-name">
-    {file.name}
-  </span>
+    <span className="file-name">
+        {file.name}
+    </span>
 
-  <button
-    type="button"
-    className="remove-file-btn"
-    onClick={() => removeFile(index)}
-  >
-    ✕
-  </button>
+    <div className="file-actions">
+
+        <button
+            type="button"
+            className="preview-btn"
+            onClick={() =>
+                window.open(
+                    URL.createObjectURL(file),
+                    "_blank"
+                )
+            }
+        >
+            👁 Preview
+        </button>
+
+        <button
+            type="button"
+            className="remove-file-btn"
+            onClick={() => removeFile(index)}
+        >
+            ✕
+        </button>
+
+    </div>
 
 </div>
 
-    ))
-
-  )}
+  ))}
 
 </div>
+
+)}
 
     <br /><br />
 
     <button
-      onClick={sendMail}
-    >
-      Send
-    </button>
+    ref={sendBtnRef}
+    onClick={sendMail}
+    onKeyDown={(e)=>{
+        if(e.key==="Enter"){
+            e.preventDefault();
+            sendMail();
+        }
+    }}
+>
+    Send
+</button>
 
   </div>
 );

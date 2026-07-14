@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 function Profile() {
@@ -8,6 +8,14 @@ useState(null);
 
 const [editMode, setEditMode] =
 useState(false);
+
+const usernameRef = useRef(null);
+const dobRef = useRef(null);
+const q1Ref = useRef(null);
+const a1Ref = useRef(null);
+const q2Ref = useRef(null);
+const a2Ref = useRef(null);
+const saveBtnRef = useRef(null);
 
 const userId =
 localStorage.getItem(
@@ -21,6 +29,16 @@ loadProfile();
 
 
 }, []);
+
+useEffect(() => {
+
+    if (editMode) {
+
+        usernameRef.current?.focus();
+
+    }
+
+}, [editMode]);
 
 const loadProfile = async () => {
 
@@ -46,6 +64,27 @@ try {
 
 const updateProfile = async () => {
 
+
+// Username Validation
+if (!/^[A-Za-z ]+$/.test(user.username.trim())) {
+
+    alert("Username should contain only alphabets.");
+
+    return;
+
+}
+
+// DOB Validation
+const today = new Date();
+const dobDate = new Date(user.dob);
+
+if (dobDate >= today) {
+
+    alert("DOB should be before today's date.");
+
+    return;
+
+}
 
 try {
 
@@ -129,18 +168,29 @@ return (
 </label>
 
     <input
-      type="text"
-      value={user.username}
-      disabled={!editMode}
-      onChange={(e) =>
-        setUser({
-          ...user,
-          username:
-            e.target.value
-        })
-      }
-    />
+    ref={usernameRef}
+    type="text"
+    value={user.username}
+    disabled={!editMode}
+    onChange={(e)=>{
+        const value=e.target.value.replace(/[^A-Za-z ]/g,"");
 
+        setUser({
+            ...user,
+            username:value
+        });
+    }}
+    onKeyDown={(e)=>{
+
+        if(e.key==="Enter"){
+
+            e.preventDefault();
+            dobRef.current.focus();
+
+        }
+
+    }}
+/>
     <br /><br />
 
     <label className="profile-label">
@@ -148,33 +198,54 @@ return (
 </label>
 
     <input
-      type="date"
-      value={user.dob}
-      disabled={!editMode}
-      onChange={(e) =>
+    ref={dobRef}
+    type="date"
+    value={user.dob}
+    max={new Date().toISOString().split("T")[0]}
+    disabled={!editMode}
+    onChange={(e)=>
         setUser({
-          ...user,
-          dob:
-            e.target.value
+            ...user,
+            dob:e.target.value
         })
-      }
-    />
+    }
+    onKeyDown={(e)=>{
+
+        if(e.key==="Enter"){
+
+            e.preventDefault();
+            q1Ref.current.focus();
+
+        }
+
+    }}
+/>
 
     <br /><br />
 
   <label className="profile-label">
   Question 1
 </label>
-
 <select
-  value={user.q1}
-  disabled={!editMode}
-  onChange={(e) =>
-    setUser({
-      ...user,
-      q1: e.target.value
-    })
-  }
+    ref={q1Ref}
+    value={user.q1}
+    disabled={!editMode}
+    onChange={(e)=>
+        setUser({
+            ...user,
+            q1:e.target.value
+        })
+    }
+    onKeyDown={(e)=>{
+
+        if(e.key==="Enter"){
+
+            e.preventDefault();
+            a1Ref.current.focus();
+
+        }
+
+    }}
 >
   <option>
     What is your nickname?
@@ -192,17 +263,27 @@ return (
 </label>
 
     <input
-      type="text"
-      value={user.a1}
-      disabled={!editMode}
-      onChange={(e) =>
+    ref={a1Ref}
+    type="text"
+    value={user.a1}
+    disabled={!editMode}
+    onChange={(e)=>
         setUser({
-          ...user,
-          a1:
-            e.target.value
+            ...user,
+            a1:e.target.value
         })
-      }
-    />
+    }
+    onKeyDown={(e)=>{
+
+        if(e.key==="Enter"){
+
+            e.preventDefault();
+            q2Ref.current.focus();
+
+        }
+
+    }}
+/>
 
     <br /><br />
 
@@ -211,14 +292,25 @@ return (
 </label>
 
 <select
-  value={user.q2}
-  disabled={!editMode}
-  onChange={(e) =>
-    setUser({
-      ...user,
-      q2: e.target.value
-    })
-  }
+    ref={q2Ref}
+    value={user.q2}
+    disabled={!editMode}
+    onChange={(e)=>
+        setUser({
+            ...user,
+            q2:e.target.value
+        })
+    }
+    onKeyDown={(e)=>{
+
+        if(e.key==="Enter"){
+
+            e.preventDefault();
+            a2Ref.current.focus();
+
+        }
+
+    }}
 >
   <option>
     What is your birthplace?
@@ -236,17 +328,27 @@ return (
 </label>
 
     <input
-      type="text"
-      value={user.a2}
-      disabled={!editMode}
-      onChange={(e) =>
+    ref={a2Ref}
+    type="text"
+    value={user.a2}
+    disabled={!editMode}
+    onChange={(e)=>
         setUser({
-          ...user,
-          a2:
-            e.target.value
+            ...user,
+            a2:e.target.value
         })
-      }
-    />
+    }
+    onKeyDown={(e)=>{
+
+        if(e.key==="Enter"){
+
+            e.preventDefault();
+            saveBtnRef.current.focus();
+
+        }
+
+    }}
+/>
 
     <br /><br />
 
@@ -256,21 +358,31 @@ return (
     <br></br>
 
     <button
-  className="profile-btn"
-  onClick={() => {
+    ref={saveBtnRef}
+    className="profile-btn"
+    onClick={()=>{
+        if(!editMode){
 
-    if (!editMode) {
+            setEditMode(true);
 
-      setEditMode(true);
+        }else{
 
-    } else {
+            updateProfile();
 
-      updateProfile();
+        }
+    }}
+    onKeyDown={(e)=>{
 
-    }
+        if(e.key==="Enter"){
 
-  }}
+            e.preventDefault();
+            updateProfile();
+
+        }
+
+    }}
 >
+  
   {editMode
     ? "💾 Save Changes"
     : "✏ Edit Profile"}

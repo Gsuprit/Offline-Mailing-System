@@ -7,11 +7,14 @@ function ChangePassword() {
 
   const navigate = useNavigate();
 
+  // Refs
   const emailRef = useRef(null);
   const oldPasswordRef = useRef(null);
   const newPasswordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
+  const saveBtnRef = useRef(null);
 
+  // States
   const [userId, setUserId] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -24,43 +27,25 @@ function ChangePassword() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [showPopup, setShowPopup] = useState(false);
+
+  // Cursor starts here
   useEffect(() => {
+    emailRef.current?.focus();
+  }, []);
 
-    const timer = setTimeout(() => {
-
-      if (!userId.trim()) {
-
-        emailRef.current?.focus();
-
-      } else if (!oldPassword.trim()) {
-
-        oldPasswordRef.current?.focus();
-
-      } else if (!newPassword.trim()) {
-
-        newPasswordRef.current?.focus();
-
-      } else if (!confirmPassword.trim()) {
-
-        confirmPasswordRef.current?.focus();
-
-      }
-
-    }, 2000);
-
-    return () => clearTimeout(timer);
-
-  }, [userId, oldPassword, newPassword, confirmPassword]);
-
+  // Validation
   const validate = () => {
 
     let newErrors = {};
 
-    if (!userId.trim())
+    if (!userId.trim()) {
       newErrors.userId = "Required";
+    }
 
-    if (!oldPassword.trim())
+    if (!oldPassword.trim()) {
       newErrors.oldPassword = "Required";
+    }
 
     if (!newPassword.trim()) {
 
@@ -88,61 +73,99 @@ function ChangePassword() {
 
     setErrors(newErrors);
 
-    return Object.keys(newErrors).length === 0;
+    if (newErrors.userId) {
+      emailRef.current.focus();
+      return false;
+    }
 
+    if (newErrors.oldPassword) {
+      oldPasswordRef.current.focus();
+      return false;
+    }
+
+    if (newErrors.newPassword) {
+      newPasswordRef.current.focus();
+      return false;
+    }
+
+    if (newErrors.confirmPassword) {
+      confirmPasswordRef.current.focus();
+      return false;
+    }
+
+    return true;
   };
-
   const changePassword = async (e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!validate()) return;
+  if (!validate()) return;
 
-    try {
+  try {
 
-      const response = await axios.get(
-        "http://localhost:8080/api/users"
-      );
+    const response = await axios.get(
+      "http://localhost:8080/api/users"
+    );
 
-      const users = response.data;
+    const users = response.data;
 
-      const validUser = users.find(
-        (user) =>
-          user.userId === userId &&
-          user.password === oldPassword
-      );
+    const validUser = users.find(
+      (user) =>
+        user.userId === userId &&
+        user.password === oldPassword
+    );
 
-      if (!validUser) {
+    if (!validUser) {
 
-        setMessage("Invalid User ID or Old Password");
-        return;
+      setErrors({
+        oldPassword: "Invalid Old Password"
+      });
 
-      }
+      setMessage("");
 
-      validUser.password = newPassword;
+      oldPasswordRef.current.focus();
 
-      await axios.put(
-  `http://localhost:8080/api/user/${userId}`,
-  validUser
-);
-
-      setMessage("Password Changed Successfully");
-
-      setUserId("");
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-
-      setErrors({});
-
-    } catch {
-
-      setMessage("Backend Connection Failed");
+      return;
 
     }
 
-  };
-  return (
+    validUser.password = newPassword;
+
+    await axios.put(
+      `http://localhost:8080/api/user/${userId}`,
+      validUser
+    );
+
+    setMessage("Password Changed Successfully");
+
+setShowPopup(true);
+
+setUserId("");
+setOldPassword("");
+setNewPassword("");
+setConfirmPassword("");
+
+setErrors({});
+
+setTimeout(() => {
+  navigate("/");
+}, 2000);
+    setTimeout(() => {
+
+      emailRef.current.focus();
+
+    }, 100);
+
+  } catch (error) {
+
+    console.log(error);
+
+    setMessage("Backend Connection Failed");
+
+  }
+
+};
+return (
 
   <div className="change-container">
 
@@ -172,20 +195,24 @@ function ChangePassword() {
             placeholder="Ex: example@gmail.com"
             value={userId}
             onChange={(e) => {
-
               setUserId(e.target.value);
-
               setErrors((prev) => ({
                 ...prev,
                 userId: ""
               }));
-
               setMessage("");
-
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                oldPasswordRef.current.focus();
+              }
             }}
           />
 
-          <span className="error">{errors.userId}</span>
+          <span className="error">
+            {errors.userId}
+          </span>
 
         </div>
 
@@ -201,32 +228,38 @@ function ChangePassword() {
               placeholder="Enter Old Password"
               value={oldPassword}
               onChange={(e) => {
-
                 setOldPassword(e.target.value);
-
                 setErrors((prev) => ({
                   ...prev,
                   oldPassword: ""
                 }));
-
                 setMessage("");
-
               }}
-              onCopy={(e)=>e.preventDefault()}
-              onPaste={(e)=>e.preventDefault()}
-              onCut={(e)=>e.preventDefault()}
+              onCopy={(e) => e.preventDefault()}
+              onPaste={(e) => e.preventDefault()}
+              onCut={(e) => e.preventDefault()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  newPasswordRef.current.focus();
+                }
+              }}
             />
 
             <span
               className="eye-icon"
-              onClick={() => setShowOldPassword(!showOldPassword)}
+              onClick={() =>
+                setShowOldPassword(!showOldPassword)
+              }
             >
               {showOldPassword ? "🙈" : "👀"}
             </span>
 
           </div>
 
-          <span className="error">{errors.oldPassword}</span>
+          <span className="error">
+            {errors.oldPassword}
+          </span>
 
         </div>
 
@@ -242,32 +275,38 @@ function ChangePassword() {
               placeholder="8-12 chars, 1 capital, 1 special"
               value={newPassword}
               onChange={(e) => {
-
                 setNewPassword(e.target.value);
-
                 setErrors((prev) => ({
                   ...prev,
                   newPassword: ""
                 }));
-
                 setMessage("");
-
               }}
-              onCopy={(e)=>e.preventDefault()}
-              onPaste={(e)=>e.preventDefault()}
-              onCut={(e)=>e.preventDefault()}
+              onCopy={(e) => e.preventDefault()}
+              onPaste={(e) => e.preventDefault()}
+              onCut={(e) => e.preventDefault()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  confirmPasswordRef.current.focus();
+                }
+              }}
             />
 
             <span
               className="eye-icon"
-              onClick={() => setShowNewPassword(!showNewPassword)}
+              onClick={() =>
+                setShowNewPassword(!showNewPassword)
+              }
             >
               {showNewPassword ? "🙈" : "👀"}
             </span>
 
           </div>
 
-          <span className="error">{errors.newPassword}</span>
+          <span className="error">
+            {errors.newPassword}
+          </span>
 
         </div>
 
@@ -283,32 +322,38 @@ function ChangePassword() {
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => {
-
                 setConfirmPassword(e.target.value);
-
                 setErrors((prev) => ({
                   ...prev,
                   confirmPassword: ""
                 }));
-
                 setMessage("");
-
               }}
-              onCopy={(e)=>e.preventDefault()}
-              onPaste={(e)=>e.preventDefault()}
-              onCut={(e)=>e.preventDefault()}
+              onCopy={(e) => e.preventDefault()}
+              onPaste={(e) => e.preventDefault()}
+              onCut={(e) => e.preventDefault()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  saveBtnRef.current.focus();
+                }
+              }}
             />
 
             <span
               className="eye-icon"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
             >
               {showConfirmPassword ? "🙈" : "👀"}
             </span>
 
           </div>
 
-          <span className="error">{errors.confirmPassword}</span>
+          <span className="error">
+            {errors.confirmPassword}
+          </span>
 
         </div>
 
@@ -323,13 +368,40 @@ function ChangePassword() {
           </button>
 
           <button
+            ref={saveBtnRef}
             type="submit"
             className="save-btn"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                changePassword(e);
+              }
+            }}
           >
             SAVE
           </button>
 
         </div>
+
+        {showPopup && (
+
+  <div className="popup-overlay">
+
+    <div className="popup-box">
+
+      <h2>🔒 Password Changed</h2>
+
+      <p>Your password has been updated successfully.</p>
+
+      <p className="redirect-text">
+        Redirecting to Login...
+      </p>
+
+    </div>
+
+  </div>
+
+)}
 
       </form>
 
@@ -342,4 +414,3 @@ function ChangePassword() {
 }
 
 export default ChangePassword;
-

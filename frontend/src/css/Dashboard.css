@@ -22,10 +22,10 @@ body,
 /* SIDEBAR */
 
 .sidebar{
-  width:260px;
+  width:220px;
   background:#111827;
   color:white;
-  padding:25px;
+  padding:18px;
   display:flex;
   flex-direction:column;
 }
@@ -41,11 +41,12 @@ body,
 }
 
 .sidebar p{
-  padding:14px;
+  padding:12px;
   border-radius:10px;
-  margin-bottom:10px;
+  margin-bottom:6px;
   cursor:pointer;
   transition:.3s;
+  font-size: 18px;
 }
 
 .sidebar p:hover{
@@ -62,15 +63,15 @@ body,
 .main-section{
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 15px;
 }
 
 /* STATS */
 
 .stats-container{
   display:flex;
-  gap:15px;
-  padding:15px;
+  gap:12px;
+  padding:10px;
   background:#0f172a;
 }
 
@@ -83,9 +84,9 @@ body,
     #1e40af
   );
 
-  padding:20px;
+  padding:14px;
 
-  border-radius:15px;
+  border-radius:12px;
 
   color:white;
 
@@ -100,19 +101,28 @@ body,
   margin-top:10px;
 }
 
+.stat-card h3{
+    font-size:20px;
+}
+
+.stat-card h2{
+    font-size:20px;
+    margin-top:8px;
+}
+
 /* MAIL AREA */
 
 .mail-layout{
   display: flex;
-  gap: 20px;
+  gap: 15px;
   height: calc(100vh - 140px);
 }
 
 .mail-list{
-  width:35%;
+  width:32%;
   background:#1e293b;
   color:white;
-  padding:20px;
+  padding:15px;
   overflow-y:auto;
 }
 
@@ -126,7 +136,7 @@ body,
   flex:1;
   background:#111827;
   color:white;
-  padding:25px;
+  padding:18px;
   overflow-y:auto;
 }
 
@@ -134,7 +144,7 @@ body,
 
 .mail-card{
   background:#334155;
-  padding:15px;
+  padding:12px;
   border-radius:12px;
   margin-bottom:12px;
   cursor:pointer;
@@ -154,12 +164,20 @@ body,
   color:#93c5fd;
 }
 
+.mail-card h4{
+    font-size:17px;
+}
+
+.mail-card p{
+    font-size:14px;
+}
+
 /* INPUTS */
 
 input,
 textarea{
   width:100%;
-  padding:12px;
+  padding:10px;
 
   background:#334155;
   color:white;
@@ -180,8 +198,9 @@ button{
   color:white;
   border:none;
   border-radius:10px;
-  padding:12px;
+  padding:10px;
   cursor:pointer;
+  font-size: 15px;
 }
 
 button:hover{
@@ -202,14 +221,14 @@ button:hover{
 
 .calendar-wrapper {
   background: #0b1730;
-  padding: 25px;
+  padding: 18px;
   border-radius: 20px;
   margin-top: 20px;
 }
 
 .fc {
   background: #0f1b3d;
-  padding: 20px;
+  padding: 15px;
   border-radius: 20px;
   color: white;
 }
@@ -233,20 +252,110 @@ button:hover{
 
 .fc-toolbar-title {
   color: white;
-  font-size: 28px !important;
+  font-size: 22px !important;
   font-weight: bold;
 }
 
 
-.fc-button {
-  background: #3366e8 !important;
-  border: none !important;
-  border-radius: 10px !important;
+.fc-button{
+    background:#2563eb !important;
+    border:none !important;
+    border-radius:10px !important;
+    padding:10px 18px !important;
+    font-size:15px !important;
+    font-weight:600 !important;
+    transition:.25s;
+    box-shadow:0 4px 12px rgba(37,99,235,.35);
 }
 
-.fc-button:hover {
-  background: #4b7cff !important;
+.fc-button:hover{
+    background:#1d4ed8 !important;
+    transform:translateY(-1px);
 }
+
+.fc-button:focus{
+    box-shadow:none !important;
+}
+
+.fc-prev-button,
+.fc-next-button{
+
+    width:42px !important;
+    height:42px !important;
+
+    border-radius:50% !important;
+
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+
+    font-size:18px !important;
+
+    margin-left:8px !important;
+}
+
+.fc-event{
+
+    background:#3b82f6 !important;
+
+    border:none !important;
+
+    border-radius:6px !important;
+
+    padding:4px 8px !important;
+
+    font-size:14px !important;
+
+    font-weight:600;
+
+    color:white;
+
+    margin:2px 0;
+
+    cursor:pointer;
+}
+
+
+.fc-popover{
+
+    background:#1e293b !important;
+
+    border:1px solid #3b82f6 !important;
+
+    border-radius:12px !important;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+
+    color:white;
+}
+
+.fc-popover-header{
+
+    background:#2563eb !important;
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    padding:10px;
+
+    border-radius:12px 12px 0 0;
+}
+
+.fc-popover-body{
+
+    padding:10px;
+}
+
+.fc-daygrid-event{
+
+    margin-top:4px !important;
+
+    margin-bottom:4px !important;
+}
+
 
 .fc-day-today {
   background: rgba(51,102,232,0.2) !important;
@@ -389,7 +498,7 @@ button:hover{
 .profile-card{
   background:#111827;
   border-radius:20px;
-  padding:30px;
+  padding:22px;
   color:white;
   box-shadow:0 4px 15px rgba(0,0,0,.25);
 }
@@ -397,7 +506,7 @@ button:hover{
 .profile-title{
   color:#60a5fa;
   margin-bottom:30px;
-  font-size:30px;
+  font-size:24px;
 }
 
 .profile-label{
@@ -502,7 +611,7 @@ button:hover{
   display:flex;
   align-items:center;
   margin-bottom:18px;
-  padding:12px 15px;
+  padding:10px 12px;
   background:#1e293b;
   border-radius:10px;
 }
@@ -535,48 +644,39 @@ button:hover{
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
-    margin-bottom:30px;
-}
-
-.dashboard-greeting{
-    font-size:34px;
-    font-weight:700;
-    color:#ffffff;
-    margin:0;
-}
-
-.dashboard-username{
-    font-size:20px;
-    font-weight:500;
-    color:#cbd5e1;
-}
-
-.dashboard-time{
-    font-size:30px;
-    font-weight:700;
-    color:#60a5fa;
-    display:flex;
-    align-items:center;
-    gap:10px;
+    margin-bottom:10px;
 }
 
 .header-left{
     display:flex;
     flex-direction:column;
+    align-items:flex-start;
 }
 
-.header-left h1{
-    font-size:34px;
+.dashboard-greeting{
+    font-size:35px;
     font-weight:700;
     color:#ffffff;
+    line-height:1.1;
     margin:0;
+    margin-bottom: 6px;
 }
 
-.header-left p{
-    margin-top:8px;
-    font-size:22px;
+.dashboard-username{
+    margin-top:10px;      /* Gap between greeting and mail ID */
+    font-size:24px;
     font-weight:500;
     color:#cbd5e1;
+    line-height:1.2;
+}
+
+.dashboard-time{
+    font-size:40px;
+    font-weight:700;
+    color:#60a5fa;
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
 
 .header-right{
@@ -585,13 +685,12 @@ button:hover{
     align-items:flex-end;
 }
 
-
-
 .date{
-    margin-top:6px;
+    margin-top:8px;
     font-size:16px;
     color:#cbd5e1;
 }
+
 .selected-files-box{
     margin-top:15px;
     height:120px;
@@ -625,7 +724,8 @@ button:hover{
     
 }
 
-/* REMOVE BUTTON */.file-item{
+/* REMOVE BUTTON */
+    .file-item{
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
@@ -663,4 +763,166 @@ button:hover{
 
 .remove-file-btn:hover{
     background:#dc2626;
+}
+
+
+.file-upload-row{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.file-count{
+    color:#cbd5e1;
+    font-size:16px;
+    font-weight:600;
+}
+
+.file-actions{
+    display:flex;
+    gap:10px;
+}
+
+.preview-btn{
+    width:90px;
+    height:34px;
+
+    background:#2563eb;
+    color:white;
+
+    border:none;
+    border-radius:8px;
+
+    font-size:13px;
+    cursor:pointer;
+}
+
+.preview-btn:hover{
+    background:#1d4ed8;
+}
+
+.popup-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.45);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.popup-box{
+
+    width:420px;
+    background:#ffffff;
+
+    border-radius:18px;
+
+    padding:35px;
+
+    text-align:center;
+
+    animation:popupShow .25s ease;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+
+}
+
+.popup-box h2{
+
+    color:#2563eb;
+    font-size:30px;
+    margin-bottom:18px;
+
+}
+
+.popup-box p{
+
+    color:#555;
+    font-size:18px;
+    margin-bottom:12px;
+
+}
+
+.redirect-text{
+
+    color:#2563eb;
+    font-weight:bold;
+    margin-bottom:25px;
+
+}
+
+.popup-buttons{
+
+    display:flex;
+    justify-content:center;
+    gap:20px;
+
+}
+
+.cancel-popup-btn{
+
+    width:150px;
+    height:50px;
+
+    background:#64748b;
+
+    border:none;
+
+    color:white;
+
+    border-radius:10px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+}
+
+.cancel-popup-btn:hover{
+
+    background:#475569;
+
+}
+
+.logout-popup-btn{
+
+    width:150px;
+    height:50px;
+
+    background:#2563eb;
+
+    border:none;
+
+    color:white;
+
+    border-radius:10px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+}
+
+.logout-popup-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+@keyframes popupShow{
+
+    from{
+        transform:scale(.85);
+        opacity:0;
+    }
+
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+
 }

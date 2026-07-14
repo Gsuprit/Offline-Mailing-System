@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import Sidebar from "../components/Sidebar";
@@ -12,6 +11,8 @@ import Profile from "../components/Profile";
 import "../css/Dashboard.css";
 
 function Dashboard() {
+
+  const navigate = useNavigate();
 
   if (localStorage.getItem("isLoggedIn") !== "true") {
     return <Navigate to="/" replace />;
@@ -25,6 +26,18 @@ function Dashboard() {
   const [selectedMail, setSelectedMail] = useState(null);
   const [replyMail, setReplyMail] = useState(null);
   const [stats, setStats] = useState(null);
+
+  // Logout Popup
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+
+  const logout = () => {
+
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("isLoggedIn");
+
+    navigate("/");
+
+  };
 
   useEffect(() => {
 
@@ -67,9 +80,7 @@ function Dashboard() {
 
     const handleBack = () => {
 
-      localStorage.clear();
-
-      window.location.replace("/");
+      logout();
 
     };
 
@@ -79,8 +90,7 @@ function Dashboard() {
       window.removeEventListener("popstate", handleBack);
 
   }, []);
-
-  const loadStats = async () => {
+    const loadStats = async () => {
 
     try {
 
@@ -103,11 +113,17 @@ function Dashboard() {
   let greeting = "";
 
   if (hour < 12) {
+
     greeting = "🌅 Good Morning";
+
   } else if (hour < 18) {
+
     greeting = "🌞 Good Afternoon";
+
   } else {
+
     greeting = "🌙 Good Evening";
+
   }
 
   return (
@@ -120,6 +136,7 @@ function Dashboard() {
           selectedMenu={selectedMenu}
           setSelectedMenu={setSelectedMenu}
           setSelectedMail={setSelectedMail}
+          onLogout={() => setShowLogoutPopup(true)}
         />
 
       </div>
@@ -128,7 +145,7 @@ function Dashboard() {
 
         <div className="dashboard-header">
 
-          <div>
+          <div className="header-left">
 
             <h1 className="dashboard-greeting">
               {greeting}
@@ -140,9 +157,13 @@ function Dashboard() {
 
           </div>
 
-          <div className="dashboard-time">
+          <div className="header-right">
 
-            🕒 {currentTime}
+            <div className="dashboard-time">
+
+              🕒 {currentTime}
+
+            </div>
 
           </div>
 
@@ -153,23 +174,35 @@ function Dashboard() {
           <div className="stats-container">
 
             <div className="stat-card">
+
               <h3>📥 Inbox</h3>
+
               <h2>{stats.inboxCount}</h2>
+
             </div>
 
             <div className="stat-card">
+
               <h3>📤 Sent</h3>
+
               <h2>{stats.sentCount}</h2>
+
             </div>
 
             <div className="stat-card">
+
               <h3>🔴 Unread</h3>
+
               <h2>{stats.unreadCount}</h2>
+
             </div>
 
             <div className="stat-card">
+
               <h3>📅 Events</h3>
+
               <h2>{stats.eventCount}</h2>
+
             </div>
 
           </div>
@@ -224,6 +257,49 @@ function Dashboard() {
           </div>
 
         )}
+                {/* Logout Popup */}
+
+        {showLogoutPopup && (
+
+          <div className="popup-overlay">
+
+            <div className="popup-box">
+
+              <h2>Logout</h2>
+
+              <p>
+                Are you sure you want to logout?
+              </p>
+
+              <p className="redirect-text">
+                You will be redirected to Login.
+              </p>
+
+              <div className="popup-buttons">
+
+                <button
+                  className="cancel-popup-btn"
+                  onClick={() =>
+                    setShowLogoutPopup(false)
+                  }
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="logout-popup-btn"
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        )}
 
       </div>
 
@@ -234,4 +310,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
